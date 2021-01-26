@@ -59,6 +59,25 @@
 
 <script>
 
+ function playSound (e) {
+  const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`); //selects the audio element from the above code using the corresponding data attribute
+  const key = document.querySelector(`.key[data-key="${e.keyCode}"]`); //selects the key element from above code using the data attribute
+  if(!audio) return; // stop function from running
+  audio.currentTime = 0; //rewinds audio element to start to allow faster playing of sounds
+  audio.play();
+  key.classList.add('playing');
+}
+function removeTransition(e) {
+  if (e.propertyName !== 'transform') return; //skip the event if it is not a transform
+  this.classList.remove('playing');
+  //"this" will target whatever the above function is working against. So because removeTransition is being called against the key on line 79, this will target 'key'
+
+}
+
+const keys = document.querySelectorAll('.key');
+//cannot use keys.addEventListener because it is responding as an array, so it wouldn't be able to listen for each individual key unless you added an event listener for each individual key
+keys.forEach(key => key.addEventListener('transitionend', removeTransition)); //each key gets an event listener added to it, which is transitionend, when a transition is ending it will be removed as a result of the removeTransition function
+window.addEventListener('keydown', playSound);
 </script>
 
 
